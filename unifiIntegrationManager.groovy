@@ -45,7 +45,6 @@ import hubitat.helper.HexUtils
 preferences
 {
     page(name: 'mainPage', title: 'Unifi Integration Manager')
-    page(name: 'setup', title: 'Setup values for your Unifi Integrations')
     page(name: 'pageEnableAPI')
     page(name: "pageDisableAPI")
  //   page(name: 'about', title: 'About')
@@ -63,62 +62,6 @@ preferences
 
     UI Page: Main menu for the app.
 */
-/* def mainPage() {
-    atomicState.backgroundActionInProgress = null
-    statusMessage = ""
-
-    def int childCount = child.size()
-    dynamicPage(name: 'mainPage', title: 'Main menu', uninstall: true, install: true, submitOnChange: true)
-    {
-        section('<b>Unifi Setup Menu</b>') {
-                href 'setup', title: 'Unifi Environment Setup', description: 'Click to load values for Unifi Integrations.'
-            }
-        section('<b>Inbound Websocket setup</b>') {
-         if (state.accessToken == null) {
-                paragraph("API is not yet Initialized!")
-                href(name: "hrefPageEnableAPI", title: "Enable API", description: "", page: "pageEnableAPI")
-            } else {
-		        section("Instructions:", hideable: true, hidden: true) {
-                    paragraph("Put the following URL into Unifi Protect Alert manager. This app will interpreate the additional parms to update the appropriate integrated device.")
-                }
-                
-  		        section("URLs") {
-                    String localURL = "${state.localAPIEndpoint}/?access_token=${state.accessToken}&dni=%DEVICE_DNI%&type=%DETECTION_TYPE%&value=%Additional_PARM%"
-                    String remoteURL = "${state.remoteAPIEndpoint}/?access_token=${state.accessToken}&dni=%DEVICE_DNI%&type=%DETECTION_TYPE%&value=%Additional_PARM%"
-                    paragraph("LOCAL API (devices): <a href=\"$localURL\" target=\"_blank\">$localURL</a>")
-                    paragraph("REMOTE API: <a href=\"$remoteURL\" target=\"_blank\">$remoteURL</a>")
-                }
-            }
-        }
-            
-        section("<b>Outbound Webhook Calls</b>") {
-            paragraph "Outbound Webhook Trigger Child Apps"
-            if (unifiApiToken){
-                app(name: "Outbound Webhook App", appName: "Unifi Outbound-Webhook", namespace: "Mavrrick", title: "Add Alarm Manager Webhook app", multiple: true)
-            } else {
-                paragraph "<b>No API Token Configured for integration. Please setup API token for Outbound Webhook Child apps to be avaliable</b>"
-            }
-        }     
-        section('<b>Logging Options</b>') {
-            input(
-                name: 'configLoggingLevelIDE',
-                title: 'IDE Live Logging Level:\nMessages with this level and higher will be logged to the IDE.',
-                type: 'enum',
-                options: [
-                    '0' : 'None',
-                    '1' : 'Error',
-                    '2' : 'Warning',
-                    '3' : 'Info',
-                    '4' : 'Debug',
-                    '5' : 'Trace'
-                ],
-                defaultValue: '1',
-                displayDuringSetup: true,
-                required: false
-            )
-        }
-    }
-} */
 
 def mainPage() {
     atomicState.backgroundActionInProgress = null
@@ -224,58 +167,6 @@ def mainPage() {
     }
 }
 
-def setup() {
-
-    logger('setup() Integration setup', 'debug')
-    dynamicPage(name: 'setup', title: '<b>Unifi Integrations configuration</b>', uninstall: false, install: false, submitOnChange: true, nextPage: "mainPage")
-    {
-        section('Avaliable Integrations') 
-        {
-            
-            input 'unifiNetwork', 'enum', title: 'Unifi Network Integration', required: true, submitOnChange: true, options:[ "Not Enabled", "Managed", "External" ], default: "Not Enabled"
-            if (unifiNetwork == "Managed"){
-                input 'unifiNetControllerType', 'enum', title: 'Please select the controller type Protect', required: true, submitOnChange: true, options:[ "Unifi Dream Machine (inc Pro)", "Other Unifi Controllers" ]
-                if (unifiNetControllerType == "Other Unifi Controllers") {
-                    input 'unifiNetControllerPort', 'string', title: 'Please enter the port of your Unifi Network controller', required: true, submitOnChange: false
-                }
-                input 'unifiNetControllerIP', 'string', title: 'Please enter the IP of your Unifi Network controller', required: true, submitOnChange: false
-                input 'unifiNetUserID', 'string', title: 'Please enter your controller User ID', required: false, submitOnChange: false
-                input 'unifiNetPassword', 'password', title: 'Please enter your controller password', required: false, submitOnChange: false            
-            } else if (unifiNetwork == "External"){
-                input name: "unifiNetDevice", type: "device.UnifiNetworkAPI", title: "Choose device"
-            }
-            input 'unifiProtect', 'enum', title: 'Unifi Protect Integration', required: true, submitOnChange: true, options:[ "Not Enabled", "Managed", "External" ]
-            if (unifiProtect == "Managed"){
-                input 'unifiProControllerType', 'enum', title: 'Please select the controller type for Portect', required: true, submitOnChange: true, options:[ "Unifi Dream Machine (inc Pro)", "Other Unifi Controllers" ]
-                if (unifiProControllerType == "Other Unifi Controllers") {
-                    input 'unifiProControllerPort', 'string', title: 'Please enter the port of your Unifi Protect controller', required: true, submitOnChange: false
-                }
-                input 'unifiProControllerIP', 'string', title: 'Please enter the IP of your Protect Controllercontroller', required: true, submitOnChange: false
-                input 'unifiProUserID', 'string', title: 'Please enter your controller User ID', required: false, submitOnChange: false
-                input 'unifiProPassword', 'password', title: 'Please enter your controller password', required: false, submitOnChange: false            
-            } else if (unifiProtect == "External"){
-                input name: "unifiProDevice", type: "device.UnifiProtectAPI", title: "Choose device"
-            }
-            input 'unifiConnect', 'enum', title: 'Unifi Connect Integration', required: true, submitOnChange: true, options:[ "Not Enabled", "Managed", "External" ]
-            if (unifiConnect == "Managed"){
-                input 'unifiConControllerType', 'enum', title: 'Please select the controller type Connect', required: true, submitOnChange: true, options:[ "Unifi Dream Machine (inc Pro)", "Other Unifi Controllers" ]
-                if (unifiConControllerType == "Other Unifi Controllers") {
-                    input 'unifiConControllerPort', 'string', title: 'Please enter the port of your Unifi Connect controller', required: true, submitOnChange: false
-                }
-                input 'unifiConControllerIP', 'string', title: 'Please enter the IP of your Connect controller', required: true, submitOnChange: false
-                input 'unifiConUserID', 'string', title: 'Please enter your controller User ID', required: false, submitOnChange: false
-                input 'unifiConPassword', 'password', title: 'Please enter your controller password', required: false, submitOnChange: false            
-            } else if (unifiProtect == "External"){
-                input name: "unifiConDevice", type: "device.UnifiConnectAPI", title: "Choose device"
-            }
-       }
-        section('API Token')
-        {
-        paragraph "Please provide your Unifi Integration API Token."
-            input 'unifiApiToken', 'string', title: 'Please enter your API Token', required: false, submitOnChange: true
-        }
-    }
-}
 
 String initializeAPIEndpoint() {
     if(!state.accessToken) {

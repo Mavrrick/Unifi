@@ -18,10 +18,9 @@ definition(
     name: 'Unifi Integration Manager',
     namespace: 'Mavrrick',
     author: 'CRAIG KING',
-    description: 'Unifi Integration Manager',
+    description: "Unifi Integration Manager, helps manage devices and drivers based on @Snell's Unifi API project.",
     category: 'Networking',
     importUrl: "https://raw.githubusercontent.com/Mavrrick/Unifi/refs/heads/main/unifiIntegrationManager.groovy",
-//    documentationLink: "https://docs.google.com/document/d/e/2PACX-1vRsjfv0eefgPGKLYffNpbZWydtp0VqxFL_Xcr-xjRKgl8vga18speyGITyCQOqlQmyiO0_xLJ9_wRqU/pub",
     iconUrl: 'https://lh4.googleusercontent.com/-1dmLp--W0OE/AAAAAAAAAAI/AAAAAAAAEYU/BRuIXPPiOmI/s0-c-k-no-ns/photo.jpg',
     iconX2Url: 'https://lh4.googleusercontent.com/-1dmLp--W0OE/AAAAAAAAAAI/AAAAAAAAEYU/BRuIXPPiOmI/s0-c-k-no-ns/photo.jpg',
 //    iconX3Url: 'https://lh4.googleusercontent.com/-1dmLp--W0OE/AAAAAAAAAAI/AAAAAAAAEYU/BRuIXPPiOmI/s0-c-k-no-ns/photo.jpg',
@@ -348,7 +347,7 @@ def installed() {
 
 def updated() {
     List childDNI = getChildDevices().deviceNetworkId
-    if (childDNI.contains("UnifiNetworkAPI") == false){
+    if (childDNI.contains("UnifiNetworkAPI") == false) {
         if (unifiNetwork == "Managed"){
             unifiNetInstall()
         }
@@ -458,7 +457,7 @@ void unifiProInstall() {
     if (unifiProControllerType == "Other Unifi Controllers") {
         device.updateSettings (unifiProControllerType, unifiProControllerPort, unifiProControllerIP, unifiProUserID, unifiProPassword)    
     } else {
-    device.updateSettings (unifiProControllerType, unifiProControllerIP, unifiProUserID, unifiProPassword) 
+        device.updateSettings (unifiProControllerType, unifiProControllerIP, unifiProUserID, unifiProPassword) 
     }
 }
 
@@ -479,7 +478,7 @@ void unifiConInstall() {
     if (unifiProControllerType == "Other Unifi Controllers") {
         device.updateSettings (unifiConControllerType, unifiConControllerPort, unifiConControllerIP, unifiConUserID, unifiConPassword)    
     } else {
-    device.updateSettings (unifiConControllerType, unifiConControllerIP, unifiConUserID, unifiConPassword)
+        device.updateSettings (unifiConControllerType, unifiConControllerIP, unifiConUserID, unifiConPassword)
     }
 }
 

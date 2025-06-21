@@ -197,7 +197,7 @@ def mainPage() {
   		        section("Inbound Webook URLs") {
                     String localURL = "${state.localAPIEndpoint}/?access_token=${state.accessToken}&dni=%DEVICE_DNI%&type=%DETECTION_TYPE%&value=%Additional_PARM%"
 //                    String remoteURL = "${state.remoteAPIEndpoint}/?access_token=${state.accessToken}&dni=%DEVICE_DNI%&type=%DETECTION_TYPE%&value=%Additional_PARM%"
-                    paragraph("LOCAL API (devices): <a href=\"$localURL\" target=\"_blank\">$localURL</a>")
+                    paragraph("LOCAL API URL: <a href=\"$localURL\" target=\"_blank\">$localURL</a>")
 //                    paragraph("REMOTE API: <a href=\"$remoteURL\" target=\"_blank\">$remoteURL</a>")
                 }             
             }

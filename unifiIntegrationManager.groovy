@@ -88,7 +88,7 @@ def mainPage() {
             } else if (unifiNetwork == "External"){
                 input name: "unifiNetDevice", type: "device.UnifiNetworkAPI", title: "Choose device"
             }
-            paragraph('<hr style="height:4px;border-width:0;color:gray;background-color:gray">')
+            paragraph('<hr style="height:2px;border-width:0;color:gray;background-color:gray">')
             input 'unifiProtect', 'enum', title: 'Unifi Protect Integration', required: true, submitOnChange: true, options:[ "Not Enabled", "Managed", "External" ], defaultValue: "Not Enabled"
             if (unifiProtect == "Managed"){
                 input 'unifiProControllerType', 'enum', title: 'Please select the controller type for Portect', required: true, submitOnChange: true, options:[ "Unifi Dream Machine (inc Pro)", "Other Unifi Controllers" ], defaultValue: "Unifi Dream Machine (inc Pro)"
@@ -101,7 +101,7 @@ def mainPage() {
             } else if (unifiProtect == "External"){
                 input name: "unifiProDevice", type: "device.UnifiProtectAPI", title: "Choose device"
             }
-            paragraph('<hr style="height:4px;border-width:0;color:gray;background-color:gray">')
+            paragraph('<hr style="height:2px;border-width:0;color:gray;background-color:gray">')
             input 'unifiConnect', 'enum', title: 'Unifi Connect Integration', required: true, submitOnChange: true, options:[ "Not Enabled", "Managed", "External" ], defaultValue: "Not Enabled"
             if (unifiConnect == "Managed"){
                 input 'unifiConControllerType', 'enum', title: 'Please select the controller type Connect', required: true, submitOnChange: true, options:[ "Unifi Dream Machine (inc Pro)", "Other Unifi Controllers" ], defaultValue: "Unifi Dream Machine (inc Pro)"

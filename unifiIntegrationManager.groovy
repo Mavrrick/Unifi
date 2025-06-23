@@ -74,6 +74,7 @@ def mainPage() {
             paragraph('When selecting the option for the type of setup to use, you can select the following options: Not Enabled, Managed, External.')
             paragraph('<ul><li>Not Enabled - Will not be used at all.</li><li>Managed - Integration will manage all aspects of the setup. Best for new setups.</li><li>External - Integration will allow additional features but not manage setup. Best for already configured setups. (Maybe rename this to "Unmanaged"?)</li></ul>')
 //                href 'setup', title: 'Unifi Environment Setup', description: 'Click to load values for Unifi Integrations.'
+//            paragraph('<hr style="height:4px;border-width:0;color:gray;background-color:gray">')
             input 'unifiNetwork', 'enum', title: 'Unifi Network Integration', required: true, submitOnChange: true, options:[ "Not Enabled", "Managed", "External" ], defaultValue: "Not Enabled"
             if (unifiNetwork == "Managed"){
                 input 'unifiNetControllerType', 'enum', title: 'Please select the controller type Protect', required: true, submitOnChange: true, options:[ "Unifi Dream Machine (inc Pro)", "Other Unifi Controllers" ], defaultValue: "Unifi Dream Machine (inc Pro)"
@@ -87,6 +88,7 @@ def mainPage() {
             } else if (unifiNetwork == "External"){
                 input name: "unifiNetDevice", type: "device.UnifiNetworkAPI", title: "Choose device"
             }
+            paragraph('<hr style="height:4px;border-width:0;color:gray;background-color:gray">')
             input 'unifiProtect', 'enum', title: 'Unifi Protect Integration', required: true, submitOnChange: true, options:[ "Not Enabled", "Managed", "External" ], defaultValue: "Not Enabled"
             if (unifiProtect == "Managed"){
                 input 'unifiProControllerType', 'enum', title: 'Please select the controller type for Portect', required: true, submitOnChange: true, options:[ "Unifi Dream Machine (inc Pro)", "Other Unifi Controllers" ], defaultValue: "Unifi Dream Machine (inc Pro)"
@@ -99,6 +101,7 @@ def mainPage() {
             } else if (unifiProtect == "External"){
                 input name: "unifiProDevice", type: "device.UnifiProtectAPI", title: "Choose device"
             }
+            paragraph('<hr style="height:4px;border-width:0;color:gray;background-color:gray">')
             input 'unifiConnect', 'enum', title: 'Unifi Connect Integration', required: true, submitOnChange: true, options:[ "Not Enabled", "Managed", "External" ], defaultValue: "Not Enabled"
             if (unifiConnect == "Managed"){
                 input 'unifiConControllerType', 'enum', title: 'Please select the controller type Connect', required: true, submitOnChange: true, options:[ "Unifi Dream Machine (inc Pro)", "Other Unifi Controllers" ], defaultValue: "Unifi Dream Machine (inc Pro)"
@@ -111,14 +114,16 @@ def mainPage() {
             } else if (unifiProtect == "External"){
                 input name: "unifiConDevice", type: "device.UnifiConnectAPI", title: "Choose device"
             }
-
+        paragraph('<hr style="height:4px;border-width:0;color:gray;background-color:gray">')
             }
+
         section('<b>Unifi Integration API Token</b>')
         {
         paragraph "API Token is only required for outbound webhook calls from Hubitat to Unifi Alarm Manager. You will not be able to enable those functions until this is entered. "
             input 'unifiApiToken', 'string', title: 'Please enter your Unifi Integration API Token here.', required: false, submitOnChange: true
+//            paragraph('<hr style="height:4px;border-width:0;color:gray;background-color:gray">')
         }
-        
+
         section("<b>Outbound Webhook Calls</b>") {
             paragraph "Outbound Webhook Trigger Child Apps"
             if (unifiApiToken){
@@ -126,13 +131,16 @@ def mainPage() {
             } else {
                 paragraph "<b>No API Token Configured for integration. Please setup API token for Outbound Webhook Child apps to be avaliable</b>"
             }
+            paragraph('<hr style="height:4px;border-width:0;color:gray;background-color:gray">')
         }
         
         section("") {
          if (state.accessToken == null) {
-                paragraph("API is not yet Initialized!")
+             section("Inbound Webhook", hidden: true) {
+                paragraph("API is not yet Initialized! Click below to complete setup")
                 href(name: "hrefPageEnableAPI", title: "Enable API", description: "", page: "pageEnableAPI")
-            } else { 
+             }
+         } else { 
 		        section("Inbound Webhook: (Expand for directions on use)", hideable: true, hidden: true) {
                     paragraph """This url is to allow you to send information from Unifi Alarm manager to Hubitat based on known alarm manager events. You will use the below URLs with updated params for dni, type, and value to convey what the Alarm Manager event means. <br><br><ul><li>Replace %DEVICE_DNI% with the Hubitat Device DNI intended to recieve the event.</li> <li>Replace %DETECTION_TYPE% with the Detection type from Alarm Manager.</li> <li>Replace %Additional_PARM% with any additional relevant info for the Alarm Manager event like the person or license plate detected</li></ul>"""
                     paragraph """Valid Detection types are:<br><br><ul><li>Face</li><li>LicensePlate</li><li>NFCCardScan</li><li>FingerprintScan</li><li>Sound</li><li>PersonOfInterest</li><li>KnownFace</li><li>UnknownFace</li><li>VehicleOfInterest</li><li>KnownVehicle</li><li>UnknownVehicle</li><li>Person</li><li>Vehicle</li><li>Package</li><li>Animal</li><li>LineCrossing</li><li>Loitering</li><li>DoorbellRings</li><li>Motion</li></ul> Enter exactly as shown here with proper case"""
@@ -145,6 +153,7 @@ def mainPage() {
 //                    paragraph("REMOTE API: <a href=\"$remoteURL\" target=\"_blank\">$remoteURL</a>")
                 }             
             }
+            paragraph('<hr style="height:4px;border-width:0;color:gray;background-color:gray">')
         }
                  
         section('<b>Logging Options</b>') {
@@ -204,23 +213,6 @@ Map pageEnableAPI() {
             } else {
                 paragraph("SUCCESS: API Initialized! Tap Done to continue")
             }
-        }
-    }
-}
-
-
-def about() {
-    dynamicPage(name: 'about', title: 'About Govee Integration with HE', uninstall: false, install: false, nextPage: "mainPage")
-    {
-        section()
-        {
-            paragraph image: 'https://lh4.googleusercontent.com/-1dmLp--W0OE/AAAAAAAAAAI/AAAAAAAAEYU/BRuIXPPiOmI/s0-c-k-no-ns/photo.jpg', 'Govee Integration'
-        }
-        section('Support the Project')
-        {
-            paragraph 'Govee is provided free for personal and non-commercial use.  I have worked on this app in my free time to fill the needs I have found for myself and others like you.  I will continue to make improvements where I can. If you would like you can donate to continue to help with development please use the link below.'
-            href(name: 'donate', style:'embedded', title: "Consider making a \$5 or \$10 donation today to support my ongoing effort to continue improving this integration.", url: 'https://www.paypal.me/mavrrick58')
-            paragraph("<style>/* The icon */ .help-tip{ 	position: absolute; 	top: 50%; 	left: 50%; 	transform: translate(-50%, -50%); 	margin: auto; 	text-align: center; 	border: 2px solid #444; 	border-radius: 50%; 	width: 40px; 	height: 40px; 	font-size: 24px; 	line-height: 42px; 	cursor: default; } .help-tip:before{     content:'?';     font-family: sans-serif;     font-weight: normal;     color:#444; } .help-tip:hover p{     display:block;     transform-origin: 100% 0%;     -webkit-animation: fadeIn 0.3s ease;     animation: fadeIn 0.3s ease; } /* The tooltip */ .help-tip p {    	display: none; 	font-family: sans-serif; 	text-rendering: optimizeLegibility; 	-webkit-font-smoothing: antialiased; 	text-align: center; 	background-color: #FFFFFF; 	padding: 12px 16px; 	width: 178px; 	height: auto; 	position: absolute; 	left: 50%; 	transform: translate(-50%, 5%); 	border-radius: 3px; /* 	border: 1px solid #E0E0E0; */ 	box-shadow: 0 0px 20px 0 rgba(0,0,0,0.1); 	color: #37393D; 	font-size: 12px; 	line-height: 18px; 	z-index: 99; } .help-tip p a { 	color: #067df7; 	text-decoration: none; } .help-tip p a:hover { 	text-decoration: underline; } /* The pointer of the tooltip */ .help-tip p:before { 	position: absolute; 	content: ''; 	width: 0; 	height: 0; 	border: 10px solid transparent; 	border-bottom-color:#FFFFFF; 	top: -9px; 	left: 50%; 	transform: translate(-50%, -50%); }  /* Prevents the tooltip from being hidden */ .help-tip p:after { 	width: 10px; 	height: 40px; 	content:''; 	position: absolute; 	top: -40px; 	left: 0; } /* CSS animation */ @-webkit-keyframes fadeIn {     0% { opacity:0; }     100% { opacity:100%; } } @keyframes fadeIn {     0% { opacity:0; }     100% { opacity:100%; } }</style><div class='help-tip'><p>This is the inline help tip! It can contain all kinds of HTML. Style it as you please.<br /><a href='#'>Here is a link</a></p></div>")
         }
     }
 }

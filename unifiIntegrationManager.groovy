@@ -81,8 +81,8 @@ def mainPage() {
                     input 'unifiNetControllerPort', 'string', title: 'Please enter the port of your Unifi Network controller', required: true, submitOnChange: false, defaultValue: "8443"
                 }
                 input 'unifiNetControllerIP', 'string', title: 'Please enter the IP of your Unifi Network controller', required: true, submitOnChange: false
-                input 'unifiNetUserID', 'string', title: 'Please enter your controller User ID', required: false, submitOnChange: false
-                input 'unifiNetPassword', 'password', title: 'Please enter your controller password', required: false, submitOnChange: false    
+                input 'unifiNetUserID', 'string', title: 'Please enter your controller User ID', required: true, submitOnChange: false
+                input 'unifiNetPassword', 'password', title: 'Please enter your controller password', required: true, submitOnChange: false    
                 input 'unifiNetChild', 'bool', title: 'Please activate to have child devices created for connect unifi devices', required: true, submitOnChange: false, defaultValue: false            
             } else if (unifiNetwork == "External"){
                 input name: "unifiNetDevice", type: "device.UnifiNetworkAPI", title: "Choose device"
@@ -94,8 +94,8 @@ def mainPage() {
                     input 'unifiProControllerPort', 'string', title: 'Please enter the port of your Unifi Protect controller', required: true, submitOnChange: false, defaultValue: "7443"
                 }
                 input 'unifiProControllerIP', 'string', title: 'Please enter the IP of your Protect Controllercontroller', required: true, submitOnChange: false
-                input 'unifiProUserID', 'string', title: 'Please enter your controller User ID', required: false, submitOnChange: false
-                input 'unifiProPassword', 'password', title: 'Please enter your controller password', required: false, submitOnChange: false            
+                input 'unifiProUserID', 'string', title: 'Please enter your controller User ID', required: true, submitOnChange: false
+                input 'unifiProPassword', 'password', title: 'Please enter your controller password', required: true, submitOnChange: false            
             } else if (unifiProtect == "External"){
                 input name: "unifiProDevice", type: "device.UnifiProtectAPI", title: "Choose device"
             }
@@ -106,8 +106,8 @@ def mainPage() {
                     input 'unifiConControllerPort', 'string', title: 'Please enter the port of your Unifi Connect controller', required: true, submitOnChange: falsed, defaultValue: "7443"
                 }
                 input 'unifiConControllerIP', 'string', title: 'Please enter the IP of your Connect controller', required: true, submitOnChange: false
-                input 'unifiConUserID', 'string', title: 'Please enter your controller User ID', required: false, submitOnChange: false
-                input 'unifiConPassword', 'password', title: 'Please enter your controller password', required: false, submitOnChange: false            
+                input 'unifiConUserID', 'string', title: 'Please enter your controller User ID', required: true, submitOnChange: false
+                input 'unifiConPassword', 'password', title: 'Please enter your controller password', required: true, submitOnChange: false            
             } else if (unifiProtect == "External"){
                 input name: "unifiConDevice", type: "device.UnifiConnectAPI", title: "Choose device"
             }

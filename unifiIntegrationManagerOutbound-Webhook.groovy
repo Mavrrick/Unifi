@@ -1,5 +1,5 @@
 /**
- *  Unifi Outbound-Webhook from HE
+ *  Unifi Integration Manager Outbound-Webhook
  *
  *  Copyright 2015 
  *

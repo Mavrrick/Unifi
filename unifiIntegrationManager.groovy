@@ -18,7 +18,7 @@ definition(
     name: 'Unifi Integration Manager',
     namespace: 'Mavrrick',
     author: 'CRAIG KING',
-    description: "Unifi Integration Manager, helps manage devices and drivers based on @Snell's Unifi API project.",
+    description: "Unifi Integration Manager, helps manage devices and drivers based on @Snell's Unifi API projects.",
     category: 'Networking',
     importUrl: "https://raw.githubusercontent.com/Mavrrick/Unifi/refs/heads/main/unifiIntegrationManager.groovy",
     iconUrl: 'https://lh4.googleusercontent.com/-1dmLp--W0OE/AAAAAAAAAAI/AAAAAAAAEYU/BRuIXPPiOmI/s0-c-k-no-ns/photo.jpg',
@@ -74,23 +74,24 @@ def mainPage() {
             paragraph('When selecting the option for the type of setup to use, you can select the following options: Not Enabled, Managed, External.')
             paragraph('<ul><li>Not Enabled - Will not be used at all.</li><li>Managed - Integration will manage all aspects of the setup. Best for new setups.</li><li>External - Integration will allow additional features but not manage setup. Best for already configured setups. (Maybe rename this to "Unmanaged"?)</li></ul>')
 //                href 'setup', title: 'Unifi Environment Setup', description: 'Click to load values for Unifi Integrations.'
-            input 'unifiNetwork', 'enum', title: 'Unifi Network Integration', required: true, submitOnChange: true, options:[ "Not Enabled", "Managed", "External" ], default: "Not Enabled"
+            input 'unifiNetwork', 'enum', title: 'Unifi Network Integration', required: true, submitOnChange: true, options:[ "Not Enabled", "Managed", "External" ], defaultValue: "Not Enabled"
             if (unifiNetwork == "Managed"){
-                input 'unifiNetControllerType', 'enum', title: 'Please select the controller type Protect', required: true, submitOnChange: true, options:[ "Unifi Dream Machine (inc Pro)", "Other Unifi Controllers" ]
+                input 'unifiNetControllerType', 'enum', title: 'Please select the controller type Protect', required: true, submitOnChange: true, options:[ "Unifi Dream Machine (inc Pro)", "Other Unifi Controllers" ], defaultValue: "Unifi Dream Machine (inc Pro)"
                 if (unifiNetControllerType == "Other Unifi Controllers") {
-                    input 'unifiNetControllerPort', 'string', title: 'Please enter the port of your Unifi Network controller', required: true, submitOnChange: false
+                    input 'unifiNetControllerPort', 'string', title: 'Please enter the port of your Unifi Network controller', required: true, submitOnChange: false, defaultValue: "8443"
                 }
                 input 'unifiNetControllerIP', 'string', title: 'Please enter the IP of your Unifi Network controller', required: true, submitOnChange: false
                 input 'unifiNetUserID', 'string', title: 'Please enter your controller User ID', required: false, submitOnChange: false
-                input 'unifiNetPassword', 'password', title: 'Please enter your controller password', required: false, submitOnChange: false            
+                input 'unifiNetPassword', 'password', title: 'Please enter your controller password', required: false, submitOnChange: false    
+                input 'unifiNetChild', 'bool', title: 'Please activate to have child devices created for connect unifi devices', required: true, submitOnChange: false, defaultValue: false            
             } else if (unifiNetwork == "External"){
                 input name: "unifiNetDevice", type: "device.UnifiNetworkAPI", title: "Choose device"
             }
-            input 'unifiProtect', 'enum', title: 'Unifi Protect Integration', required: true, submitOnChange: true, options:[ "Not Enabled", "Managed", "External" ]
+            input 'unifiProtect', 'enum', title: 'Unifi Protect Integration', required: true, submitOnChange: true, options:[ "Not Enabled", "Managed", "External" ], defaultValue: "Not Enabled"
             if (unifiProtect == "Managed"){
-                input 'unifiProControllerType', 'enum', title: 'Please select the controller type for Portect', required: true, submitOnChange: true, options:[ "Unifi Dream Machine (inc Pro)", "Other Unifi Controllers" ]
+                input 'unifiProControllerType', 'enum', title: 'Please select the controller type for Portect', required: true, submitOnChange: true, options:[ "Unifi Dream Machine (inc Pro)", "Other Unifi Controllers" ], defaultValue: "Unifi Dream Machine (inc Pro)"
                 if (unifiProControllerType == "Other Unifi Controllers") {
-                    input 'unifiProControllerPort', 'string', title: 'Please enter the port of your Unifi Protect controller', required: true, submitOnChange: false
+                    input 'unifiProControllerPort', 'string', title: 'Please enter the port of your Unifi Protect controller', required: true, submitOnChange: false, defaultValue: "7443"
                 }
                 input 'unifiProControllerIP', 'string', title: 'Please enter the IP of your Protect Controllercontroller', required: true, submitOnChange: false
                 input 'unifiProUserID', 'string', title: 'Please enter your controller User ID', required: false, submitOnChange: false
@@ -98,11 +99,11 @@ def mainPage() {
             } else if (unifiProtect == "External"){
                 input name: "unifiProDevice", type: "device.UnifiProtectAPI", title: "Choose device"
             }
-            input 'unifiConnect', 'enum', title: 'Unifi Connect Integration', required: true, submitOnChange: true, options:[ "Not Enabled", "Managed", "External" ]
+            input 'unifiConnect', 'enum', title: 'Unifi Connect Integration', required: true, submitOnChange: true, options:[ "Not Enabled", "Managed", "External" ], defaultValue: "Not Enabled"
             if (unifiConnect == "Managed"){
-                input 'unifiConControllerType', 'enum', title: 'Please select the controller type Connect', required: true, submitOnChange: true, options:[ "Unifi Dream Machine (inc Pro)", "Other Unifi Controllers" ]
+                input 'unifiConControllerType', 'enum', title: 'Please select the controller type Connect', required: true, submitOnChange: true, options:[ "Unifi Dream Machine (inc Pro)", "Other Unifi Controllers" ], defaultValue: "Unifi Dream Machine (inc Pro)"
                 if (unifiConControllerType == "Other Unifi Controllers") {
-                    input 'unifiConControllerPort', 'string', title: 'Please enter the port of your Unifi Connect controller', required: true, submitOnChange: false
+                    input 'unifiConControllerPort', 'string', title: 'Please enter the port of your Unifi Connect controller', required: true, submitOnChange: falsed, defaultValue: "7443"
                 }
                 input 'unifiConControllerIP', 'string', title: 'Please enter the IP of your Connect controller', required: true, submitOnChange: false
                 input 'unifiConUserID', 'string', title: 'Please enter your controller User ID', required: false, submitOnChange: false
@@ -244,35 +245,21 @@ def updated() {
             unifiNetInstall()
         }
     } else {
-        device = getChildDevice('UnifiNetworkAPI')
-        if (unifiProControllerType == "Other Unifi Controllers") {
-            device.updateSettings (unifiProControllerType, unifiProControllerPort, unifiProControllerIP, unifiProUserID, unifiProPassword)    
-        } else {
-            device.updateSettings (unifiProControllerType, unifiProControllerIP, unifiProUserID, unifiProPassword) 
-        }
+        setNetPref()
     }
     if (childDNI.contains("UnifiProtectAPI") == false) {
         if (unifiProtect == "Managed"){
             unifiProInstall()
         }
     } else {
-        device = getChildDevice('UnifiProtectAPI')
-        if (unifiProControllerType == "Other Unifi Controllers") {
-            device.updateSettings (unifiProControllerType, unifiProControllerPort, unifiProControllerIP, unifiProUserID, unifiProPassword)    
-        } else {
-            device.updateSettings (unifiProControllerType, unifiProControllerIP, unifiProUserID, unifiProPassword) 
-        }
+        setProPref()        
     }
     if (childDNI.contains("UnifiConnectAPI") == false) {
         if (unifiConnect == "Managed"){
             unifiConInstall()
         }
     } else {
-        if (unifiProControllerType == "Other Unifi Controllers") {
-            device.updateSettings (unifiConControllerType, unifiConControllerPort, unifiConControllerIP, unifiConUserID, unifiConPassword)    
-        } else {
-            device.updateSettings (unifiConControllerType, unifiConControllerIP, unifiConUserID, unifiConPassword)
-        }
+        setNetPref()
     }
 }
 
@@ -306,9 +293,7 @@ def webHook () {
 }
 
 /**
- *  Device Instal Wrapper functions
- *
- *  
+ *  Device Install Wrapper functions  
  **/
 
 void unifiNetInstall() {
@@ -324,12 +309,7 @@ void unifiNetInstall() {
              'completedSetup': true,
          ])
     }
-    device = getChildDevice('UnifiNetworkAPI')
-    if (unifiNetControllerType == "Other Unifi Controllers") {
-        device.updateSettings (unifiNetControllerType, unifiNetControllerPort, unifiNetControllerIP, unifiNetUserID, unifiNetPassword)    
-    } else {    
-        device.updateSettings (unifiNetControllerType, unifiNetControllerIP, unifiNetUserID, unifiNetPassword)
-    }
+    setNetPref()
 }
 
 void unifiProInstall() {
@@ -345,12 +325,7 @@ void unifiProInstall() {
              'completedSetup': true,
          ])
     }
-    device = getChildDevice('UnifiProtectAPI')
-    if (unifiProControllerType == "Other Unifi Controllers") {
-        device.updateSettings (unifiProControllerType, unifiProControllerPort, unifiProControllerIP, unifiProUserID, unifiProPassword)    
-    } else {
-        device.updateSettings (unifiProControllerType, unifiProControllerIP, unifiProUserID, unifiProPassword) 
-    }
+    setProPref()
 }
 
 void unifiConInstall() {
@@ -366,14 +341,55 @@ void unifiConInstall() {
              'completedSetup': true,
          ])
     } 
-    device = getChildDevice('UnifiProtectAPI')
-    if (unifiProControllerType == "Other Unifi Controllers") {
-        device.updateSettings (unifiConControllerType, unifiConControllerPort, unifiConControllerIP, unifiConUserID, unifiConPassword)    
-    } else {
-        device.updateSettings (unifiConControllerType, unifiConControllerIP, unifiConUserID, unifiConPassword)
-    }
+    setConPref()
 }
 
+/*
+* Set preferences helper app for each integration
+*/
+void setNetPref(){
+    log.debug "Setting values for Unifi Network App"
+    device = getChildDevice('UnifiNetworkAPI')
+    device.unschedule(login)
+    device.updateDevSettings("Controller", "enum", unifiNetControllerType)
+    if (unifiProControllerType == "Other Unifi Controllers") {
+        device.updateDevSettings("ControllerPort", "string", unifiNetControllerPort)
+    }  
+    device.updateDevSettings("UnifiURL", "string", unifiNetControllerIP)
+    device.updateDevSettings("Username", "string", unifiNetUserID)
+    device.updateDevSettings("Password", "password", unifiNetPassword)
+    device.updateDevSettings("UnifiChildren", "bool", unifiNetChild.toString())
+    device.Login()
+    device.updated()
+}
+
+void setProPref(){
+    device = getChildDevice('UnifiProtectAPI')
+    device.unschedule(login)
+    device.updateDevSettings("Controller", "enum", unifiProControllerType)
+    if (unifiProControllerType == "Other Unifi Controllers") {
+        device.updateDevSettings("ControllerPort", "string", unifiProControllerPort)
+    }  
+    device.updateDevSettings("UnifiURL", "string", unifiProControllerIP)
+    device.updateDevSettings("Username", "string", unifiProUserID)
+    device.updateDevSettings("Password", "password", unifiProPassword)
+    device.Login()
+    device.refresh()
+    device.SetScheduledTasks()
+}
+
+void setConPref(){
+    device = getChildDevice('UnifiConnectAPI')
+    device.unschedule(login)
+    device.updateDevSettings("Controller", "enum", unifiConControllerType)
+    if (unifiProControllerType == "Other Unifi Controllers") {
+        device.updateDevSettings("ControllerPort", "string", unifiConControllerPort)
+    }  
+    device.updateDevSettings("UnifiURL", "string", unifiConControllerIP)
+    device.updateDevSettings("Username", "string", unifiConUserID)
+    device.updateDevSettings("Password", "password", unifiConPassword)
+    device.Login()
+}
 
 /**
  *  logger()

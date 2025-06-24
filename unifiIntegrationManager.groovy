@@ -85,6 +85,7 @@ def mainPage() {
                 input 'unifiNetUserID', 'string', title: 'Please enter your controller User ID', required: true, submitOnChange: false
                 input 'unifiNetPassword', 'password', title: 'Please enter your controller password', required: true, submitOnChange: false    
                 input 'unifiNetChild', 'bool', title: 'Please activate to have child devices created for connect unifi devices', required: true, submitOnChange: false, defaultValue: false            
+                input 'unifiNetRefreshRate', 'enum', title: 'Please select the controller type Protect', required: true, submitOnChange: true, options:[ "5 minutes", "10 minutes", "15 minutes", "30 minutes", "1 hour", "3 hours", "Manual" ], defaultValue: "15 minutes"        
             } else if (unifiNetwork == "External"){
                 input name: "unifiNetDevice", type: "device.UnifiNetworkAPI", title: "Choose device"
             }
@@ -98,6 +99,7 @@ def mainPage() {
                 input 'unifiProControllerIP', 'string', title: 'Please enter the IP of your Protect Controllercontroller', required: true, submitOnChange: false
                 input 'unifiProUserID', 'string', title: 'Please enter your controller User ID', required: true, submitOnChange: false
                 input 'unifiProPassword', 'password', title: 'Please enter your controller password', required: true, submitOnChange: false            
+                input 'unifiProRefreshRate', 'enum', title: 'Please select the controller type Protect', required: true, submitOnChange: true, options:[ "5 minutes", "10 minutes", "15 minutes", "30 minutes", "1 hour", "3 hours", "Manual" ], defaultValue: "15 minutes"        
             } else if (unifiProtect == "External"){
                 input name: "unifiProDevice", type: "device.UnifiProtectAPI", title: "Choose device"
             }
@@ -111,6 +113,7 @@ def mainPage() {
                 input 'unifiConControllerIP', 'string', title: 'Please enter the IP of your Connect controller', required: true, submitOnChange: false
                 input 'unifiConUserID', 'string', title: 'Please enter your controller User ID', required: true, submitOnChange: false
                 input 'unifiConPassword', 'password', title: 'Please enter your controller password', required: true, submitOnChange: false            
+                input 'unifiConRefreshRate', 'enum', title: 'Please select the controller type Protect', required: true, submitOnChange: true, options:[ "5 minutes", "10 minutes", "15 minutes", "30 minutes", "1 hour", "3 hours", "Manual" ], defaultValue: "15 minutes"        
             } else if (unifiProtect == "External"){
                 input name: "unifiConDevice", type: "device.UnifiConnectAPI", title: "Choose device"
             }
@@ -127,7 +130,7 @@ def mainPage() {
         section("<b>Outbound Webhook Calls</b>") {
             paragraph "Outbound Webhook Trigger Child Apps"
             if (unifiApiToken){
-                app(name: "Outbound Webhook App", appName: "Unifi Outbound-Webhook", namespace: "Mavrrick", title: "Add Alarm Manager Webhook app", multiple: true)
+                app(name: "Outbound Webhook App", appName: "Unifi Integration Manager Outbound-Webhook", namespace: "Mavrrick", title: "Add Alarm Manager Webhook app", multiple: true)
             } else {
                 paragraph "<b>No API Token Configured for integration. Please setup API token for Outbound Webhook Child apps to be avaliable</b>"
             }
@@ -275,7 +278,7 @@ def webHook () {
     log.debug("Processing a webHook() $params.dni $params.type $params.value")
     String devicedni = params.dni.toString()
     String type = params.type.toString()
-    String value = params.value.toString()
+    Stringvalue = params.value.toString()
     if (unifiProtect == "Managed"){
         device = getChildDevice('UnifiProtectAPI')
         device.ApplyWebHook(devicedni, type, value)
@@ -351,6 +354,7 @@ void setNetPref(){
     device.updateDevSettings("Username", "string", unifiNetUserID)
     device.updateDevSettings("Password", "password", unifiNetPassword)
     device.updateDevSettings("UnifiChildren", "bool", unifiNetChild.toString())
+    device.updateDevSettings("RefreshRate", "enum", unifiNetRefreshRate)
     device.Login()
     device.updated()
 }
@@ -365,6 +369,7 @@ void setProPref(){
     device.updateDevSettings("UnifiURL", "string", unifiProControllerIP)
     device.updateDevSettings("Username", "string", unifiProUserID)
     device.updateDevSettings("Password", "password", unifiProPassword)
+    device.updateDevSettings("RefreshRate", "enum", unifiProRefreshRate)
     device.Login()
     device.refresh()
     device.SetScheduledTasks()
@@ -380,6 +385,7 @@ void setConPref(){
     device.updateDevSettings("UnifiURL", "string", unifiConControllerIP)
     device.updateDevSettings("Username", "string", unifiConUserID)
     device.updateDevSettings("Password", "password", unifiConPassword)
+    device.updateDevSettings("RefreshRate", "enum", unifiConRefreshRate)    
     device.Login()
 }
 
